@@ -1,44 +1,51 @@
-
-
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import folium
+from streamlit_folium import st_folium
+from folium import CircleMarker
 
-st.set_page_config(page_title="지역별 이산화탄소 & 기온 분석", layout="wide")
-
-st.title("📊 지역별 이산화탄소 농도 및 기온 변화")
+# 앱 제목
+st.title("전북특별자치도 이산화탄소(CO) 농도 지도 시각화")
 
 # 데이터 불러오기
 @st.cache_data
 def load_data():
-    # 실제로는 로컬 파일 또는 웹에서 불러올 수 있음
-    url = "https://raw.githubusercontent.com/yourusername/yourrepo/main/co2_temperature.csv"
-    df = pd.read_csv(url)
+    df = pd.read_csv("전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv")
+    df = df.dropna(subset=["위도", "경도", "일산화탄소농도"])
+    df["일산화탄소농도"] = pd.to_numeric(df["일산화탄소농도"], errors="coerce")
     return df
 
-df = load_data()
+data = load_data()
 
-# 지역 선택
-regions = df['지역'].unique()
-selected_region = st.selectbox("지역을 선택하세요", regions)
+# 지도 중심 좌표 설정
+center_lat = data["위도"].mean()
+center_lon = data["경도"].mean()
 
-# 필터링
-region_data = df[df['지역'] == selected_region]
+# folium 지도 생성
+m = folium.Map(location=[center_lat, center_lon], zoom_start=11)
 
-# 날짜 형식 추가
-region_data['날짜'] = pd.to_datetime(region_data[['년도', '월']].assign(day=1))
+# 색상 결정 함수
+def get_color(co_value):
+    if co_value < 0.5:
+        return "green"
+    elif co_value < 1.0:
+        return "yellow"
+    elif co_value < 2.0:
+        return "orange"
+    else:
+        return "red"
 
-# 시각화
-tab1, tab2 = st.tabs(["🌿 이산화탄소 농도", "🌡️ 평균기온"])
+# 마커 추가
+for _, row in data.iterrows():
+    CircleMarker(
+        location=[row["위도"], row["경도"]],
+        radius=7,
+        color=get_color(row["일산화탄소농도"]),
+        fill=True,
+        fill_color=get_color(row["일산화탄소농도"]),
+        fill_opacity=0.7,
+        popup=folium.Popup(f"{row['측정소명']}<br>CO: {row['일산화탄소농도']}ppm", max_width=200)
+    ).add_to(m)
 
-with tab1:
-    fig_co2 = px.line(region_data, x='날짜', y='이산화탄소(ppm)',
-                      title=f"{selected_region} - 월별 이산화탄소 농도 추이",
-                      markers=True)
-    st.plotly_chart(fig_co2, use_container_width=True)
-
-with tab2:
-    fig_temp = px.line(region_data, x='날짜', y='평균기온(℃)',
-                       title=f"{selected_region} - 월별 평균기온 추이",
-                       markers=True)
-    st.plotly_chart(fig_temp, use_container_width=True)
+# Streamlit에 지도 렌더링
+st_folium(m, width=700, height=500)
