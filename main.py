@@ -36,7 +36,7 @@ def load_data():
     df["경도"] = df["측정소"].map(lambda x: station_coords.get(x, [None, None])[1])
 
     # 결측치 제거
-    df = df.dropna(subset=["위도", "경도", "일산화탄소농도"])
+    df = df.dropna(subset=["위도", "경도", "일산화탄소"])
 
     return df
 
@@ -64,7 +64,7 @@ for _, row in data.iterrows():
         fill=True,
         fill_color=get_color(row["일산화탄소농도"]),
         fill_opacity=0.7,
-        popup=(f"{row['측정소']}<br>일산화탄소농도: {row['일산화탄소농도']} ppm"),
+        popup=(f"{row['측정소']}<br>일산화탄소농도: {row['일산화탄소']} ppm"),
     ).add_to(m)
 
 # 지도 출력
