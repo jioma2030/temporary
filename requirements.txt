@@ -2,4 +2,4 @@ streamlit
 pandas
 folium
 streamlit-folium
-upgrade streamlit-folium
+upgrade folium
