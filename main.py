@@ -60,9 +60,9 @@ for _, row in data.iterrows():
     folium.CircleMarker(
         location=[row["위도"], row["경도"]],
         radius=10,
-        color=get_color(row["일산화탄소농도"]),
+        color=get_color(row["일산화탄소"]),
         fill=True,
-        fill_color=get_color(row["일산화탄소농도"]),
+        fill_color=get_color(row["일산화탄소"]),
         fill_opacity=0.7,
         popup=(f"{row['측정소']}<br>일산화탄소농도: {row['일산화탄소']} ppm"),
     ).add_to(m)
