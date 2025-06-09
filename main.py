@@ -12,12 +12,13 @@ st.title("전북특별자치도 CO 농도 지도 시각화")
 def load_data():
     try:
         # GitHub Raw URL (실제 URL로 교체)
-        csv_url = "전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv"  # 예: https://raw.githubusercontent.com/username/repo/main/전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv
+        csv_url = "YOUR_GITHUB_RAW_URL"  # 예: https://raw.githubusercontent.com/username/repo/main/전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv
         df = pd.read_csv(csv_url, encoding='cp949')
 
         # 디버깅: 데이터 구조 확인
         st.write("CSV 데이터 미리보기:", df.head())
         st.write("측정소 고유 값:", df["측정소"].unique())
+        st.write("전체 데이터 행 수:", len(df))
 
         # 미리 정의된 측정소 위경도 정보
         station_coords = {
@@ -41,6 +42,9 @@ def load_data():
         # 측정소 이름 정규화 (공백, 특수문자 제거)
         df["측정소"] = df["측정소"].str.strip().str.replace(r'\s+', '', regex=True)
 
+        # 디버깅: 정규화 후 측정소 값 확인
+        st.write("정규화 후 측정소 고유 값:", df["측정소"].unique())
+
         # 위도, 경도 열 생성
         df["위도"] = df["측정소"].map(lambda x: station_coords.get(x, [None, None])[0])
         df["경도"] = df["측정소"].map(lambda x: station_coords.get(x, [None, None])[1])
@@ -54,8 +58,10 @@ def load_data():
         # 유효 데이터 확인
         if df.empty:
             st.warning("유효한 데이터가 없습니다. 측정소 이름이 station_coords와 일치하는지 확인하세요.")
+            st.write("사용 가능한 측정소:", list(station_coords.keys()))
         else:
-            st.write("유효 데이터:", df[["측정소", "위도", "경도", "일산화탄소"]])
+            st.write("유효 데이터 (마커로 표시될 데이터):", df[["측정소", "위도", "경도", "일산화탄소"]])
+            st.write("유효 데이터 행 수:", len(df))
 
         return df
     except Exception as e:
@@ -96,6 +102,9 @@ else:
             fill_opacity=0.7,
             popup=folium.Popup(f"{row['측정소']}<br>일산화탄소농도: {row['일산화탄소']} ppm", max_width=300)
         ).add_to(m)
+
+    # 디버깅: 마커 추가 확인
+    st.write(f"지도에 추가된 마커 수: {len(data)}")
 
     # 지도 출력
     st_folium(m, width=1000, height=700)
