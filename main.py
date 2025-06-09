@@ -12,7 +12,7 @@ st.title("전북특별자치도 CO 농도 지도 시각화")
 def load_data():
     try:
         # GitHub Raw URL (실제 URL로 교체)
-        csv_url = "YOUR_GITHUB_RAW_URL"  # 예: https://raw.githubusercontent.com/username/repo/main/전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv
+        csv_url = "전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv"  # 예: https://raw.githubusercontent.com/username/repo/main/전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv
         df = pd.read_csv(csv_url, encoding='cp949')
 
         # 디버깅: 데이터 구조 확인
