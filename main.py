@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-# Streamlit 기본 설정
+# 페이지 설정
 st.set_page_config(layout="wide")
 st.title("전북특별자치도 일산화탄소 농도 시각화")
 
 # CSV 파일 경로 (수정 가능)
-csv_path = "전북특별자치도_대기오염정보.csv"
+csv_path = "전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv"
 
 @st.cache_data
 def load_data(path):
@@ -22,21 +22,15 @@ try:
     if "측정소" not in df.columns or "일산화탄소" not in df.columns:
         st.error("CSV 파일에 '측정소'와 '일산화탄소' 컬럼이 있어야 합니다.")
     else:
-        # 결측치 제거
         df = df.dropna(subset=["측정소", "일산화탄소"])
 
-        # 데이터 미리보기
-        st.subheader("데이터 미리보기")
-        st.dataframe(df)
-
-        # 시각화
         st.subheader("일산화탄소 농도 막대 그래프")
 
         chart = alt.Chart(df).mark_bar().encode(
             x=alt.X("측정소:N", sort="-y", title="측정소"),
             y=alt.Y("일산화탄소:Q", title="일산화탄소 (ppm)"),
-            color=alt.Color("일산화탄소:Q", scale=alt.Scale(scheme="redyellowgreen"), legend=None),
-            tooltip=["측정소", "일산화탄소"]
+            tooltip=["측정소", "일산화탄소"],
+            color=alt.value("#1f77b4")  # 고정된 파란색
         ).properties(width=800, height=500)
 
         st.altair_chart(chart, use_container_width=True)
