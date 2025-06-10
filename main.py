@@ -7,7 +7,7 @@ st.set_page_config(layout="wide")
 st.title("전북특별자치도 일산화탄소 농도 시각화")
 
 # CSV 파일 경로 (수정 가능)
-csv_path = "전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv"
+csv_path = "전북특별자치도_대기오염정보.csv"
 
 @st.cache_data
 def load_data(path):
