@@ -20,12 +20,12 @@ if uploaded_file:
     grouped = filtered_df.groupby('업종')['합계'].sum().sort_values(ascending=False)
 
     # 시각화
-    st.subheader("업종별 전체 온실가스 배출량 합계 (천tCO₂)")
+    st.subheader("Total greenhouse gas emissions by industry (천tCO₂)")
     fig, ax = plt.subplots(figsize=(10, 6))
     grouped.plot(kind='bar', color='skyblue', ax=ax)
-    ax.set_ylabel("천tCO₂")
-    ax.set_xlabel("업종")
-    ax.set_title("업종별 온실가스 배출량 합계")
+    ax.set_ylabel("1000tCO₂")
+    ax.set_xlabel("industry")
+    ax.set_title("Total greenhouse gas emissions by industry")
     plt.xticks(rotation=45, ha='right')
     plt.grid(axis='y')
     st.pyplot(fig)
