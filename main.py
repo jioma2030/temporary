@@ -8,12 +8,18 @@ st.set_page_config(layout="wide")
 st.title("전북특별자치도 CO 농도 지도 시각화")
 
 # CSV 파일 로딩 함수
+uploaded_file = st.file_uploader("CSV 파일 업로드", type="csv")
+
 @st.cache_data
-def load_data():
-    try:
-        # GitHub Raw URL (실제 URL로 교체)
-        csv_url = "Update 전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv"  # 예: https://raw.githubusercontent.com/username/repo/main/전북특별자치도_대기오염정보(이산화질소_일산화탄소)_20200331.csv
-        df = pd.read_csv(csv_url, encoding='cp949')
+def load_data(uploaded_file):
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file, encoding='cp949')
+        return df
+    return pd.DataFrame()
+
+if uploaded_file:
+    data = load_data(uploaded_file)
+    ...
 
         # 디버깅: 데이터 구조 확인
         st.write("CSV 데이터 미리보기:", df.head())
