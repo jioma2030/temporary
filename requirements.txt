@@ -5,3 +5,4 @@ streamlit-folium
 altair
 matplotlib
 koreanize-matplotlib
+streamlit pandas matplotlib seaborn
