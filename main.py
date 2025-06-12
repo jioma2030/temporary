@@ -96,20 +96,37 @@ elif viz_type == "Industry-Fuel Bar Chart":
     st.pyplot(fig)
 
 
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 import numpy as np
 
-# 연도별 온실가스 합계 예측
-df['연도'] = pd.to_datetime(df['기준년월'], format='%Y-%m').dt.year
+# 데이터 불러오기 (로컬 실행 시 사용)
+# df = pd.read_csv('your_file.csv')
+
+# Streamlit 환경에서 업로드
+st.title("🌍 Industrial GHG Emissions Visualization & Forecasting")
+
+# CSV 직접 불러오기 (Streamlit Cloud에서 파일 직접 업로드)
+df = pd.read_csv("한국에너지공단_산업부문 에너지사용 및 온실가스배출량 통계_20231231.csv")
+
+# '합계' 열만 사용, 연도는 가상 생성 (예: 2013년부터 시작)
+df = df.copy()
+df = df.reset_index(drop=True)
+start_year = 2013
+df['연도'] = [start_year + i for i in range(len(df))]
+
+# 연도별 총합 계산
 yearly = df.groupby('연도')['합계'].sum().reset_index()
 
-# 선형 회귀로 미래 예측
+# 선형 회귀로 예측
 X = yearly[['연도']]
 y = yearly['합계']
 model = LinearRegression()
 model.fit(X, y)
 
-# 2024~2035년 예측
+# 미래 연도 예측 (2024~2035)
 future_years = pd.DataFrame({'연도': list(range(2024, 2036))})
 future_preds = model.predict(future_years)
 
