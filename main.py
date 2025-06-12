@@ -11,7 +11,7 @@ st.set_page_config(page_title="Industrial GHG Visualization", layout="wide")
 st.title("📊 Industrial Energy Use and GHG Emissions Visualization")
 
 # 자동으로 포함된 CSV 파일 경로
-file_path = "한국에너지공단_산업부문 에너지사용 및 온실가스배출량 통계_20231231(영문).csv"
+file_path = "한국에너지공단_산업부문 에너지사용 및 온실가스배출량 통계_20231231.csv"
 df = pd.read_csv(file_path)
 
 # 숫자형 컬럼 처리
