@@ -6,3 +6,4 @@ altair
 matplotlib
 seaborn
 scikit-learn
+LinearRegression
