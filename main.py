@@ -96,48 +96,12 @@ elif viz_type == "Industry-Fuel Bar Chart":
     st.pyplot(fig)
 
 
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-import numpy as np
+st.markdown(f"""
+### 🔮 미래 전망 해설
 
-# 데이터 불러오기 (로컬 실행 시 사용)
-# df = pd.read_csv('your_file.csv')
+현재 한국 산업 부문의 온실가스 배출 추세에 따르면:
 
-# Streamlit 환경에서 업로드
-st.title("🌍 Industrial GHG Emissions Visualization & Forecasting")
-
-# CSV 직접 불러오기 (Streamlit Cloud에서 파일 직접 업로드)
-df = pd.read_csv("한국에너지공단_산업부문 에너지사용 및 온실가스배출량 통계_20231231.csv")
-
-# '합계' 열만 사용, 연도는 가상 생성 (예: 2013년부터 시작)
-df = df.copy()
-df = df.reset_index(drop=True)
-start_year = 2013
-df['연도'] = [start_year + i for i in range(len(df))]
-
-# 연도별 총합 계산
-yearly = df.groupby('연도')['합계'].sum().reset_index()
-
-# 선형 회귀로 예측
-X = yearly[['연도']]
-y = yearly['합계']
-model = LinearRegression()
-model.fit(X, y)
-
-# 미래 연도 예측 (2024~2035)
-future_years = pd.DataFrame({'연도': list(range(2024, 2036))})
-future_preds = model.predict(future_years)
-
-# 시각화
-st.subheader("📈 Predicted Total GHG Emissions (2024–2035)")
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.plot(yearly['연도'], yearly['합계'], label="Actual", marker='o')
-ax.plot(future_years['연도'], future_preds, label="Predicted", linestyle='--', marker='x', color='orange')
-ax.set_xlabel("Year")
-ax.set_ylabel("Total Emissions (kTon CO₂)")
-ax.set_title("Future GHG Emissions Prediction")
-ax.legend()
-ax.grid()
-st.pyplot(fig)
+- 별도의 감축 조치가 없는 경우, **2035년까지 배출량이 꾸준히 증가**할 것으로 예측됩니다.  
+- 현재의 패턴이 계속된다면, **2035년 총 온실가스 배출량은 약 {future_preds[-1]:,.0f} kTon CO₂**에 이를 수 있어, 탄소중립 목표 달성에 큰 도전이 될 수 있습니다.  
+- 이는 산업 부문에서의 **에너지 효율 개선**, **탄소 저감 기술 도입**, **강력한 기후 정책 시행**이 절실하다는 점을 시사합니다.
+""")
